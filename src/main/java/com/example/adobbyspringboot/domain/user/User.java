@@ -12,11 +12,10 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder(access = AccessLevel.PRIVATE)
+@Builder(access = AccessLevel.PUBLIC)
 @Document(collation = "user")
 public class User {
     @Id
-    private Long id;
-    private String adid;
+    private String androidId;
     private List<Diary> diaries;
 }
