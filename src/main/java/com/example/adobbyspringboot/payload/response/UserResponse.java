@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UserResponse {
-    private Long diaryId;
+    private int diaryId;
     private String line;
     //private Blob image;   이미지 요약 기능 시 사용
 }
