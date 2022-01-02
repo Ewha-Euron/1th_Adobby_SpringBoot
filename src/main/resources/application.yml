@@ -1,0 +1,4 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://adobby:1127@adobby.houen.mongodb.net/test?retryWrites=true&w=majority
