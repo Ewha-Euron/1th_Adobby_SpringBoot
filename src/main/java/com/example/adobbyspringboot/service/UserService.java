@@ -9,7 +9,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -24,18 +26,26 @@ public class UserService {
                     .androidId(androidId)
                     .build());
         }
+        System.out.println(user);
         return user;
     }
 
     public List<Diary> getUserDiary(String androidId, Long lastDiaryId, int size){
         int lastIndex = 0;
         List<Diary> diaries = findUserByAndroidId(androidId).getDiaries();
+        System.out.println(diaries);
         if(diaries == null || diaries.isEmpty()){
-            Diary diary = new Diary(LocalDate.now(), "","");
+            Integer date = Integer.parseInt(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+            Diary diary = new Diary(0, date, "","",false);
             List<Diary> emptyDiary = new ArrayList<>();
             emptyDiary.add(diary);
             return emptyDiary;
         }
+        for(Diary diary : diaries){
+            if(diary.isDeleted())
+                diaries.remove(diary);
+        }
+        Collections.sort(diaries);
         if(diaries.size() < lastDiaryId.intValue() + size)
             lastIndex = diaries.size();
         else
