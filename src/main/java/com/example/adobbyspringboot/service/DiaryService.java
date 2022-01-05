@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,9 +47,11 @@ public class DiaryService {
         else{
             index = diaries.get(diaries.size() - 1).getDiaryId() + 1;
         }
+        List<Diary> diaryList = new ArrayList<>();
         Diary diary = textToDiary(index, date, text);
+        diaryList.add(diary);
 
-        update.push("diaries").each(diary);
+        update.push("diaries").each(diaryList);
         mongoTemplate.updateFirst(query, update, "user");
 
         return diary;
@@ -81,35 +84,44 @@ public class DiaryService {
     }
 
     public LineResponse patchTextDiary(CorrectTextDiaryRequest diaryRequest){
+        Query query = new Query().addCriteria(
+                Criteria.where("_id").is(diaryRequest.getAndroidId())
+        );
+        query.addCriteria(
+                Criteria.where("diaries.diaryId").is(diaryRequest.getDiaryId())
+        );
+        Update update = new Update().set("diaries.$.text", diaryRequest.getText());
+        mongoTemplate.updateFirst(query, update, "user");
+
         String line = textToLine(diaryRequest.getDiaryId(), diaryRequest.getAndroidId(), diaryRequest.getText());
         return new LineResponse(diaryRequest.getDiaryId(), line);
     }
 
     public void correctLine(CorrectLineRequest lineRequest){
-        Update update = new Update().set("line", lineRequest.getLine());
-        User user = mongoTemplate.update(User.class)
-                .matching(new Query(new Criteria().andOperator(
-                        Criteria.where("_id").is(lineRequest.getAndroidId()),
-                        Criteria.where("diaries").elemMatch(Criteria.where("diaryId").is(lineRequest.getDiaryId())))))
-                .apply(update)
-                .findAndModifyValue();
+        Query query = new Query().addCriteria(
+                Criteria.where("_id").is(lineRequest.getAndroidId())
+        );
+        query.addCriteria(
+                Criteria.where("diaries.diaryId").is(lineRequest.getDiaryId())
+        );
+        Update update = new Update().set("diaries.$.line", lineRequest.getLine());
+        mongoTemplate.updateFirst(query, update, "user");
     }
 
-    public DiaryResponse readDiary(String androidId, int diaryId){
-        Diary diary = mongoTemplate.findOne(new Query(new Criteria().andOperator(
-                Criteria.where("_id").is(androidId),
-                Criteria.where("diaries").elemMatch(Criteria.where("diaryId").is(diaryId)))), Diary.class);
-        System.out.println(diary);
+    public DiaryResponse readOneDiary(String androidId, int diaryId){
+        List<Diary> diaries = userService.findUserByAndroidId(androidId).getDiaries();
+        Diary diary = diaries.get(diaryId - 1);
         return new DiaryResponse(diary.getText());
     }
 
     public void deleteDiary(String androidId, int diaryId){
-        Update update = new Update().set("isDeleted", true);
-        Diary diary = mongoTemplate.update(Diary.class)
-                .matching(new Query(new Criteria().andOperator(
-                        Criteria.where("_id").is(androidId),
-                        Criteria.where("diaries").elemMatch(Criteria.where("diaryId").is(diaryId)))))
-                .apply(update)
-                .findAndModifyValue();
+        Query query = new Query().addCriteria(
+                Criteria.where("_id").is(androidId)
+        );
+        query.addCriteria(
+                Criteria.where("diaries.diaryId").is(diaryId)
+        );
+        Update update = new Update().set("diaries.$.isDeleted", true);
+        mongoTemplate.updateFirst(query, update, "user");
     }
 }
