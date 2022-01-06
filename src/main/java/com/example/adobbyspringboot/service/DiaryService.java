@@ -58,7 +58,7 @@ public class DiaryService {
     }
 
     public String textToLine(int diaryId, String androidId, String text){
-        String url = "http://127.0.0.1:5000/text/line";
+        String url = "[주소 수정]/text/line";
         Map<String, Object> params = new HashMap<>();
         params.put("androidId", androidId);
         params.put("diaryId", diaryId);
@@ -67,7 +67,7 @@ public class DiaryService {
         try{
             ResponseEntity<FlaskLineResponse> response = restTemplate.getForEntity(
                     url + "/{androidId}/{diaryId}", FlaskLineResponse.class, params);
-            if(response.getBody().getMessage().equals("Sucess")){
+            if(response.getBody().getMessage().equals("Success")){
                 return response.getBody().getLine();
             }
         }
