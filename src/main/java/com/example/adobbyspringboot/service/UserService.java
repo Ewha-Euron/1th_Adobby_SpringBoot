@@ -6,6 +6,8 @@ import com.example.adobbyspringboot.payload.response.UserListResponse;
 import com.example.adobbyspringboot.payload.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -26,40 +28,29 @@ public class UserService {
                     .androidId(androidId)
                     .build());
         }
-        System.out.println(user);
         return user;
     }
 
-    public List<Diary> getUserDiary(String androidId, Long lastDiaryId, int size){
-        int lastIndex = 0;
-        List<Diary> diaries = findUserByAndroidId(androidId).getDiaries();
-        System.out.println(diaries);
-        if(diaries == null || diaries.isEmpty()){
-            Integer date = Integer.parseInt(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
-            Diary diary = new Diary(0, date, "","",false);
-            List<Diary> emptyDiary = new ArrayList<>();
-            emptyDiary.add(diary);
-            return emptyDiary;
-        }
-        for(Diary diary : diaries){
-            if(diary.isDeleted())
-                diaries.remove(diary);
-        }
+    public List<Diary> getUserDiary(String androidId){
+        User user = findUserByAndroidId(androidId);
+        List<Diary> diaries = user.getDiaries();
+
         Collections.sort(diaries);
-        if(diaries.size() < lastDiaryId.intValue() + size)
-            lastIndex = diaries.size();
-        else
-            lastIndex = lastDiaryId.intValue() + size;
-        return diaries.subList(lastDiaryId.intValue(), lastIndex);
+        return diaries;
     }
 
-    public UserListResponse userDiaryToResponse(String androidId, Long lastDiaryId, int size){
-        List<Diary> diaries = getUserDiary(androidId, lastDiaryId, size);
+    public UserListResponse userDiaryToResponse(String androidId, int yearMonth){
+        int start = yearMonth * 100;
+        int end = yearMonth * 100 + 32;
+
+        List<Diary> diaries = getUserDiary(androidId);
         List<UserResponse> userResponses = new ArrayList<>();
 
         for(Diary diary : diaries){
-            UserResponse userResponse = new UserResponse(diaries.indexOf(diary) + 1, diary.getLine());
-            userResponses.add(userResponse);
+            if(!diary.isDeleted() && diary.getDate() >= start && diary.getDate() <= end){
+                UserResponse userResponse = new UserResponse(diary.getDiaryId(), diary.getLine(), diary.getDate());
+                userResponses.add(userResponse);
+            }
         }
 
         return new UserListResponse(userResponses);
