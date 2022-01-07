@@ -5,9 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UserResponse {
+public class LineResponse {
     private int diaryId;
     private String line;
-    private int date;
-    //private Blob image;   이미지 요약 기능 시 사용
 }

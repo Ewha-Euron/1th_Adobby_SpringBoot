@@ -19,9 +19,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/scroll")
-    public ResponseEntity<?> getDiaries(@RequestParam @Valid String androidId, @RequestParam @Valid  int lastDiaryId, @RequestParam @Valid  int size){
-        Long diaryId = Long.valueOf(lastDiaryId);
-        UserListResponse userListResponse = userService.userDiaryToResponse(androidId, diaryId, size);
+    public ResponseEntity<?> getDiaries(@RequestParam @Valid String androidId, @RequestParam @Valid  int yearMonth){
+        UserListResponse userListResponse = userService.userDiaryToResponse(androidId, yearMonth);
         return new ResponseEntity<>(userListResponse, HttpStatus.OK);
     }
 }
