@@ -8,5 +8,6 @@ import lombok.Getter;
 public class UserResponse {
     private int diaryId;
     private String line;
+    private int date;
     //private Blob image;   이미지 요약 기능 시 사용
 }

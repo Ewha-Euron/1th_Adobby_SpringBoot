@@ -35,7 +35,7 @@ public class DiaryController {
 
     @GetMapping("/diary")
     public ResponseEntity<?> readDiary(@RequestParam @Valid String androidId, @RequestParam @Valid int diaryId){
-        return new ResponseEntity<>(diaryService.readDiary(androidId, diaryId), HttpStatus.OK);
+        return new ResponseEntity<>(diaryService.readOneDiary(androidId, diaryId), HttpStatus.OK);
     }
 
     @DeleteMapping("/eraser")
