@@ -6,6 +6,9 @@ Abstractive summarization 기법을 활용한 하루 일기 요약 어플리케�
 
 Gradle, SpringBoot 2.6.2, Java 11
 
+### 사용 모델
+[Pororo](https://github.com/kakaobrain/pororo)
+
 <br>
 
 ### 프로젝트 코드 구조
@@ -53,6 +56,8 @@ Gradle, SpringBoot 2.6.2, Java 11
                 <li>이때, 상세 내용에는 일기내용, 일기 요약 문장이 포함됨</li>
             </ul>
         </ul>
+    </div>
+</details>
 
 <details>
     <summary>일기 작성 및 수정</summary>
@@ -77,6 +82,8 @@ Gradle, SpringBoot 2.6.2, Java 11
                 <li>Pororo 모델로 요약된 한줄 일기를 수정할 수 있음</li>
             </ul>
         </ul>
+    </div>
+</details>
 
 <details>
     <summary>일기 삭제</summary>
@@ -87,4 +94,6 @@ Gradle, SpringBoot 2.6.2, Java 11
                 <li>작성한 일기를 삭제할 수 있음</li>
             </ul>
         </ul>
+    </div>
+</details>
 
