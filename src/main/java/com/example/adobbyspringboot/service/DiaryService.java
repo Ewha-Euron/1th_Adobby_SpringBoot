@@ -29,12 +29,12 @@ public class DiaryService {
     private final UserService userService;
     private final MongoTemplate mongoTemplate;
 
-    public Diary textToDiary(int diaryId, Integer date, String text){
-        return new Diary(diaryId, date, text);
+    public Diary textToDiary(int diaryId, Integer date, String title, String text){
+        return new Diary(diaryId, date, title, text);
     }
 
     @Transactional
-    public Diary updateText(String androidId, Integer date, String text){
+    public Diary updateText(String androidId, Integer date, String title, String text){
         Query query = new Query().addCriteria(Criteria.where("_id").is(androidId));
         Update update = new Update();
         int index;
@@ -48,7 +48,7 @@ public class DiaryService {
             index = diaries.get(diaries.size() - 1).getDiaryId() + 1;
         }
         List<Diary> diaryList = new ArrayList<>();
-        Diary diary = textToDiary(index, date, text);
+        Diary diary = textToDiary(index, date, title, text);
         diaryList.add(diary);
 
         update.push("diaries").each(diaryList);
@@ -78,7 +78,7 @@ public class DiaryService {
     }
 
     public LineResponse createTextDiary(CreateTextDiaryRequest diaryRequest){
-        Diary diary = updateText(diaryRequest.getAndroidId(), diaryRequest.getDate(), diaryRequest.getText());
+        Diary diary = updateText(diaryRequest.getAndroidId(), diaryRequest.getDate(), diaryRequest.getTitle(), diaryRequest.getText());
         String line = textToLine(diary.getDiaryId(), diaryRequest.getAndroidId(), diaryRequest.getText());
         return new LineResponse(diary.getDiaryId(), line);
     }

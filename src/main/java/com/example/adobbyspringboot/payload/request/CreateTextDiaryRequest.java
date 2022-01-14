@@ -12,4 +12,6 @@ public class CreateTextDiaryRequest {
     private Integer date;
     @NotNull
     private String androidId;
+    @NotNull
+    private String title;
 }
