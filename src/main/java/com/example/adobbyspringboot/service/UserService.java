@@ -48,7 +48,7 @@ public class UserService {
 
         for(Diary diary : diaries){
             if(!diary.isDeleted() && diary.getDate() >= start && diary.getDate() <= end){
-                UserResponse userResponse = new UserResponse(diary.getDiaryId(), diary.getLine(), diary.getDate());
+                UserResponse userResponse = new UserResponse(diary.getDiaryId(), diary.getLine(), diary.getDate(), diary.getTitle());
                 userResponses.add(userResponse);
             }
         }

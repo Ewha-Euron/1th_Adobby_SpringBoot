@@ -16,10 +16,12 @@ public class Diary implements Comparable {
     private String text;
     //private Blob image; List 형태로 구현, 프론트에서 이미지를 blob 형태로 줘야 함
     private String line;
+    private String title;
     private boolean isDeleted;
-    public Diary(int id, Integer today, String txt){
+    public Diary(int id, Integer today, String title, String txt){
         diaryId = id;
         date = today;
+        this.title = title;
         text = txt;
         isDeleted = false;
     }
